@@ -1,9 +1,12 @@
 package com.example.marvel.ui.characterDetails
 
+import android.content.Context
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -12,10 +15,7 @@ import com.bumptech.glide.Glide
 import com.example.marvel.R
 import com.example.marvel.data.models.MarvelResponse
 import com.example.marvel.data.network.CharactersApi
-import com.example.marvel.data.network.NetworkConnectionInterceptor
-import com.example.marvel.data.repositories.ApiException
 import com.example.marvel.data.repositories.CharacterDetailsRepository
-import com.example.marvel.data.repositories.NoInternetException
 import com.example.marvel.util.hide
 import com.example.marvel.util.show
 import com.example.marvel.util.snackbar
@@ -71,8 +71,7 @@ class CharacterDetailsFragment : Fragment(),CharacterDetailsListener,RecyclerVie
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val networkConnectionInterceptor= NetworkConnectionInterceptor(requireContext())
-        val api = CharactersApi(networkConnectionInterceptor)
+        val api = CharactersApi()
         val repository = CharacterDetailsRepository(api)
 
         factory = CharacterDetailsViewModelFactory(repository)
@@ -88,34 +87,40 @@ class CharacterDetailsFragment : Fragment(),CharacterDetailsListener,RecyclerVie
         getStoriesList()
 
     }
-
+    val isConnected: Boolean
+        get() {
+            return (context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
+                .activeNetworkInfo?.isConnected == true
+        }
     private fun getStoriesList() {
-        viewModel.getStoriesList(characetrId.toString(),"5e04a468ed4195a738dd34e8fdf9b639","7aefd3336721c23e03f8765ec7e41ac5","1")
-        try {
-            viewModel.stories.observe(viewLifecycleOwner, Observer {storiesList ->
+        if(isConnected) {
+            viewModel.getStoriesList(
+                characetrId.toString(),
+                "5e04a468ed4195a738dd34e8fdf9b639",
+                "7aefd3336721c23e03f8765ec7e41ac5",
+                "1"
+            )
+            viewModel.stories.observe(viewLifecycleOwner, Observer { storiesList ->
                 rvStories.also {
-                    it.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+                    it.layoutManager =
+                        LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
                     it.setHasFixedSize(true)
-                    storiesAdapter=MarvelAdapter(storiesList,this)
-                    it.adapter =storiesAdapter
+                    storiesAdapter = MarvelAdapter(storiesList, this)
+                    it.adapter = storiesAdapter
 
                 }
                 progressBar.hide()
 
-            }) }  catch (e: ApiException) {
-            e.printStackTrace()
-            onFailure(e.message.toString())
-
-        } catch (e: NoInternetException) {
-            e.printStackTrace()
-            onFailure(e.message.toString())
+            })
+        }else{
+            Toast.makeText(context,"check network connection!", Toast.LENGTH_LONG).show()
         }
 
     }
 
     private fun getSeriesList() {
+        if(isConnected) {
         viewModel.getSeriesList(characetrId.toString(),"5e04a468ed4195a738dd34e8fdf9b639","7aefd3336721c23e03f8765ec7e41ac5","1")
-        try {
             seriesViewModel.series.observe(viewLifecycleOwner, Observer {series ->
                 rvSeries.also {
                     it.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
@@ -126,20 +131,15 @@ class CharacterDetailsFragment : Fragment(),CharacterDetailsListener,RecyclerVie
                 }
                 progressBar.hide()
 
-            }) }  catch (e: ApiException) {
-            e.printStackTrace()
-            onFailure(e.message.toString())
-
-        } catch (e: NoInternetException) {
-            e.printStackTrace()
-            onFailure(e.message.toString())
+            })
+        }else{
+            Toast.makeText(context,"check network connection!", Toast.LENGTH_LONG).show()
         }
-
     }
 
     private fun getComicsList() {
+        if(isConnected){
         viewModel.getComicsList(characetrId.toString(),"5e04a468ed4195a738dd34e8fdf9b639","7aefd3336721c23e03f8765ec7e41ac5","1")
-        try {
             viewModel.comics.observe(viewLifecycleOwner, Observer { comics ->
 
                 rvComics.also {
@@ -150,15 +150,10 @@ class CharacterDetailsFragment : Fragment(),CharacterDetailsListener,RecyclerVie
                 }
                 progressBar.hide()
 
-            }) }  catch (e: ApiException) {
-            e.printStackTrace()
-            onFailure(e.message.toString())
-
-        } catch (e: NoInternetException) {
-            e.printStackTrace()
-            onFailure(e.message.toString())
+            })
+        }else{
+            Toast.makeText(context,"check network connection!", Toast.LENGTH_LONG).show()
         }
-
     }
 
     override fun onStarted() {

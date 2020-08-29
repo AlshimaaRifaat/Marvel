@@ -56,14 +56,14 @@ interface CharactersApi {
     ) : Response<MarvelResponse>
 
     companion object{
-        operator fun invoke(networkConnectionInterceptor: NetworkConnectionInterceptor) : CharactersApi {
+        operator fun invoke() : CharactersApi {
             val interceptor= HttpLoggingInterceptor();
 
             interceptor.level= HttpLoggingInterceptor.Level.BODY
 
 
             val okkHttpclient = OkHttpClient.Builder()
-                .addInterceptor(networkConnectionInterceptor)
+
                 .addInterceptor(interceptor)
                 .connectTimeout(60, TimeUnit.SECONDS) // connect timeout
                 .readTimeout(60, TimeUnit.SECONDS)

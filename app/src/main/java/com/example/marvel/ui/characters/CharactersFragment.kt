@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -20,10 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.marvel.R
 import com.example.marvel.data.models.CharactersResponse
 import com.example.marvel.data.network.CharactersApi
-import com.example.marvel.data.network.NetworkConnectionInterceptor
-import com.example.marvel.data.repositories.ApiException
 import com.example.marvel.data.repositories.CharactersRepository
-import com.example.marvel.data.repositories.NoInternetException
 
 import com.example.marvel.util.hide
 import com.example.marvel.util.show
@@ -66,8 +62,8 @@ class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListe
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         result_List=  mutableListOf<CharactersResponse.Data.Result>()
-        val networkConnectionInterceptor= NetworkConnectionInterceptor(requireContext())
-        val api = CharactersApi(networkConnectionInterceptor)
+        
+        val api = CharactersApi()
         val repository = CharactersRepository(api)
 
         factory = CharactersViewModelFactory(
