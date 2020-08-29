@@ -1,5 +1,7 @@
 package com.example.marvel.ui.characters
 
+import android.content.Context
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -93,6 +96,11 @@ class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListe
         EditSearchChanger()
     }
 
+    val isConnected: Boolean
+        get() {
+            return (context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
+                .activeNetworkInfo?.isConnected == true
+        }
     private fun ScrollSearch() {
         rvCharacters.layoutManager = LinearLayoutManager(requireContext())
         endlessScrollListener = object : EndlessScrollListener(rvCharacters.layoutManager!!) {
@@ -150,10 +158,16 @@ class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListe
     }
 
     private fun searchCharactersResult(page:Int) {
-        viewModel.getSearchCharactersResult(etSearch.text.toString(),"5e04a468ed4195a738dd34e8fdf9b639","7aefd3336721c23e03f8765ec7e41ac5","1",page)
-        try {
+        if(isConnected) {
+            viewModel.getSearchCharactersResult(
+                etSearch.text.toString(),
+                "5e04a468ed4195a738dd34e8fdf9b639",
+                "7aefd3336721c23e03f8765ec7e41ac5",
+                "1",
+                page
+            )
             viewModel.searchCharactersResult.observe(viewLifecycleOwner, Observer { searchData ->
-                this.totalPages = (searchData.offset!!+1)*(searchData.limit!!)
+                this.totalPages = (searchData.offset!! + 1) * (searchData.limit!!)
                 // Toast.makeText(this,result_List.size.toString(),Toast.LENGTH_LONG).show()
                 result_List.addAll(searchData.results)
                 charactersAdapter.notifyItemRangeInserted(
@@ -164,13 +178,9 @@ class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListe
                 rvCharacters.addOnScrollListener(endlessScrollListener)
 
 
-            }) }  catch (e: ApiException) {
-            e.printStackTrace()
-            onFailure(e.message.toString())
-
-        } catch (e: NoInternetException) {
-            e.printStackTrace()
-            onFailure(e.message.toString())
+            })
+        }else{
+            Toast.makeText(context,"check network connection!", Toast.LENGTH_LONG).show()
         }
 
     }
@@ -181,28 +191,31 @@ class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListe
     }
 
     private fun charactersList(page: Int) {
-        viewModel.getCharacters("5e04a468ed4195a738dd34e8fdf9b639","7aefd3336721c23e03f8765ec7e41ac5","1",page)
-        try {
+        if (isConnected) {
+            viewModel.getCharacters(
+                "5e04a468ed4195a738dd34e8fdf9b639",
+                "7aefd3336721c23e03f8765ec7e41ac5",
+                "1",
+                page
+            )
+
             viewModel.characters.observe(viewLifecycleOwner, Observer { charactersData ->
-                progress_bar.visibility=View.GONE
-                this.totalPages = (charactersData.offset!!+1)*(charactersData.limit!!)
+                progress_bar.visibility = View.GONE
+                this.totalPages = (charactersData.offset!! + 1) * (charactersData.limit!!)
                 result_List.addAll(charactersData.results)
 
                 charactersAdapter.notifyItemRangeInserted(
                     charactersAdapter.getItemCount(),
-                    result_List.size
-                )
-Toast.makeText(context,result_List.size.toString(),Toast.LENGTH_SHORT).show();
+                    result_List.size)
+//Toast.makeText(context,result_List.size.toString(),Toast.LENGTH_SHORT).show();
                 rvCharacters.addOnScrollListener(endlessScrollListener)
 
-            }) }  catch (e: ApiException) {
-            e.printStackTrace()
-            onFailure(e.message.toString())
-
-        } catch (e: NoInternetException) {
-            e.printStackTrace()
-            onFailure(e.message.toString())
+            })
+        }else
+        {
+            Toast.makeText(context,"check network connection!", Toast.LENGTH_LONG).show()
         }
+
     }
 
     private fun initScroll() {
