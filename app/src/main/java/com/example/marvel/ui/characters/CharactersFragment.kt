@@ -28,6 +28,9 @@ import com.example.marvel.util.show
 import com.example.marvel.util.snackbar
 import kotlinx.android.synthetic.main.fragment_characters.*
 import android.widget.TextView.OnEditorActionListener
+import android.widget.Toast
+import androidx.recyclerview.widget.DefaultItemAnimator
+import com.example.marvel.paging.EndlessScrollListener
 import com.example.marvel.ui.characterDetails.MarvelAdapter
 
 
@@ -36,7 +39,23 @@ class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListe
     private lateinit var factory: CharactersViewModelFactory
     private lateinit var viewModel: CharactersViewModel
     var navController: NavController? = null
+    public lateinit var charactersAdapter : CharactersAdapter
     public lateinit var searchResultAdapter : CharactersAdapter
+
+
+    var my_page = 1
+    lateinit var result_List: MutableList<CharactersResponse.Data.Result>
+
+    var totalPages:Int=0
+
+    lateinit var endlessScrollListener: EndlessScrollListener
+    //private val kProgressHUD: KProgressHUD? = null
+    //lateinit var searchPeopleAdapter: PopularPeopleAdapter
+    var my_search_page = 1
+    //    lateinit var result_search_List: MutableList<result>
+    var Status:Boolean=false
+    var totalSearchPages:Int=0
+    lateinit var endlessSearchScrollListener: EndlessScrollListener
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -52,7 +71,7 @@ class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListe
     }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
+        result_List=  mutableListOf<CharactersResponse.Data.Result>()
         val networkConnectionInterceptor= NetworkConnectionInterceptor(requireContext())
         val api = CharactersApi(networkConnectionInterceptor)
         val repository = CharactersRepository(api)
@@ -62,6 +81,9 @@ class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListe
         )
         viewModel = ViewModelProviders.of(this, factory).get(CharactersViewModel::class.java)
         viewModel.charactersListener=this
+        charactersAdapter= CharactersAdapter(result_List,this)
+        rvCharacters.adapter =charactersAdapter
+        ScrollSearch()
         getCharactersList()
 
         icSearch.setOnClickListener { view->
@@ -76,8 +98,23 @@ class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListe
             icSearch.visibility=View.VISIBLE
             tCancel.visibility=View.GONE
         }
-        SearchKeyBoard()
+       // SearchKeyBoard()
         EditSearchChanger()
+    }
+
+    private fun ScrollSearch() {
+        rvCharacters.layoutManager = LinearLayoutManager(requireContext())
+        endlessScrollListener = object : EndlessScrollListener(rvCharacters.layoutManager!!) {
+            override fun onLoadMore(currentPage: Int, totalItemCount: Int) {
+                if (currentPage < totalPages) {
+                    my_page++
+                    searchCharactersResult(my_page)
+                }
+
+            }
+
+            override fun onScroll(firstVisibleItem: Int, dy: Int, scrollPosition: Int) {}
+        }
     }
 
     private fun EditSearchChanger() {
@@ -85,13 +122,27 @@ class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListe
 
 
             override fun afterTextChanged(s: Editable) {
-                if(s.isEmpty())
+               /* if(s.isEmpty())
                 {
                     getCharactersList()
                 }else{
                     searchCharactersResult()
-                }
+                }*/
 
+                initScroll()
+                result_List.clear()
+
+                my_page = 1
+                totalPages=0
+
+                if(s.isEmpty()){
+                    Status=false
+                    charactersList(my_page)
+                }else {
+
+                    Status = true
+                    searchCharactersResult(my_page)
+                }
 
 
             }
@@ -112,18 +163,20 @@ class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListe
         })
     }
 
-    private fun searchCharactersResult() {
-        viewModel.getSearchCharactersResult(etSearch.text.toString(),"5e04a468ed4195a738dd34e8fdf9b639","7aefd3336721c23e03f8765ec7e41ac5","1")
+    private fun searchCharactersResult(page:Int) {
+        viewModel.getSearchCharactersResult(etSearch.text.toString(),"5e04a468ed4195a738dd34e8fdf9b639","7aefd3336721c23e03f8765ec7e41ac5","1",page)
         try {
-            viewModel.searchCharactersResult.observe(viewLifecycleOwner, Observer { searchResultList ->
+            viewModel.searchCharactersResult.observe(viewLifecycleOwner, Observer { searchData ->
+                this.totalPages = (searchData.offset!!+1)*(searchData.limit!!)
+                // Toast.makeText(this,result_List.size.toString(),Toast.LENGTH_LONG).show()
+                result_List.addAll(searchData.results)
+                charactersAdapter.notifyItemRangeInserted(
+                    charactersAdapter.getItemCount(),
+                    result_List.size
+                )
 
-                rvCharacters.also {
-                    it.layoutManager = LinearLayoutManager(requireContext())
-                    it.setHasFixedSize(true)
-                    searchResultAdapter=CharactersAdapter(searchResultList,this)
-                    it.adapter =searchResultAdapter
+                rvCharacters.addOnScrollListener(endlessScrollListener)
 
-                }
 
             }) }  catch (e: ApiException) {
             e.printStackTrace()
@@ -136,7 +189,7 @@ class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListe
 
     }
 
-    private fun SearchKeyBoard() {
+   /* private fun SearchKeyBoard() {
         etSearch.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 if (!etSearch.text.toString().isEmpty()) {
@@ -148,11 +201,12 @@ class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListe
         })
 
 
-
     }
-
+*/
     private fun getCharactersList() {
-        viewModel.getCharacters("5e04a468ed4195a738dd34e8fdf9b639","7aefd3336721c23e03f8765ec7e41ac5","1")
+        initScroll()
+        charactersList(my_page);
+       /* viewModel.getCharacters("5e04a468ed4195a738dd34e8fdf9b639","7aefd3336721c23e03f8765ec7e41ac5","1")
         try {
             viewModel.characters.observe(viewLifecycleOwner, Observer { characters ->
 
@@ -170,8 +224,62 @@ class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListe
         } catch (e: NoInternetException) {
             e.printStackTrace()
             onFailure(e.message.toString())
-        }
+        }*/
 
+    }
+
+    private fun charactersList(page: Int) {
+        viewModel.getCharacters("5e04a468ed4195a738dd34e8fdf9b639","7aefd3336721c23e03f8765ec7e41ac5","1",0)
+        try {
+            viewModel.characters.observe(viewLifecycleOwner, Observer { charactersData ->
+
+                /*rvCharacters.also {
+                    it.layoutManager = LinearLayoutManager(requireContext())
+                    it.setHasFixedSize(true)
+                    it.adapter =
+                        CharactersAdapter(characters,this)
+                }*/
+                this.totalPages = (charactersData.offset!!+1)*(charactersData.limit!!)
+                result_List.addAll(charactersData.results)
+
+                charactersAdapter.notifyItemRangeInserted(
+                    charactersAdapter.getItemCount(),
+                    result_List.size
+                )
+
+                rvCharacters.addOnScrollListener(endlessScrollListener)
+
+            }) }  catch (e: ApiException) {
+            e.printStackTrace()
+            onFailure(e.message.toString())
+
+        } catch (e: NoInternetException) {
+            e.printStackTrace()
+            onFailure(e.message.toString())
+        }
+    }
+
+    private fun initScroll() {
+        rvCharacters.layoutManager = LinearLayoutManager(requireContext())
+        rvCharacters.setItemAnimator(DefaultItemAnimator())
+
+        endlessScrollListener = object : EndlessScrollListener(rvCharacters.layoutManager!!) {
+            override fun onLoadMore(currentPage: Int, totalItemCount: Int) {
+                if (Status == false) {
+                    if (currentPage < totalPages) {
+                        my_page++
+                        charactersList(my_page)
+                    }
+                } else {
+                    if (currentPage < totalPages) {
+                        my_page++
+                        searchCharactersResult(my_page)
+                    }
+                }
+            }
+
+            override fun onScroll(firstVisibleItem: Int, dy: Int, scrollPosition: Int) {}
+        }
     }
 
 
@@ -192,7 +300,7 @@ class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListe
         when(view.id){
             R.id.item_root_layout -> {
                 val bundle = bundleOf(
-                    "image" to characterItem.thumbnail.path+"."+characterItem.thumbnail.extension,
+                    "image" to characterItem.thumbnail?.path+"."+characterItem.thumbnail?.extension,
                     "name" to characterItem.name,
                     "description" to characterItem.description,
                     "id" to characterItem.id.toString()

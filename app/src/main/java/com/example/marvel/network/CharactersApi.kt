@@ -4,19 +4,22 @@ package com.example.marvel.network
 import com.example.marvel.models.CharactersResponse
 import com.example.marvel.models.MarvelResponse
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import java.util.concurrent.TimeUnit
 
 interface CharactersApi {
     @GET("characters")
     suspend fun getCharacters(
         @Query("apikey") apikey: String,
         @Query("hash") hash: String,
-        @Query("ts") ts: String
+        @Query("ts") ts: String,
+        @Query("offset") offset: Int
     ) : Response<CharactersResponse>
 
     @GET("characters")
@@ -24,7 +27,8 @@ interface CharactersApi {
         @Query("nameStartsWith") nameStartsWith: String,
         @Query("apikey") apikey: String,
         @Query("hash") hash: String,
-        @Query("ts") ts: String
+        @Query("ts") ts: String,
+        @Query("offset") offset: Int
     ) : Response<CharactersResponse>
 
     @GET("characters/{characterId}/comics")
@@ -46,8 +50,18 @@ interface CharactersApi {
 
     companion object{
         operator fun invoke(networkConnectionInterceptor: NetworkConnectionInterceptor) : CharactersApi {
+            val interceptor= HttpLoggingInterceptor();
+
+            interceptor.level= HttpLoggingInterceptor.Level.BODY
+
+
             val okkHttpclient = OkHttpClient.Builder()
                 .addInterceptor(networkConnectionInterceptor)
+                .addInterceptor(interceptor)
+                .connectTimeout(60, TimeUnit.SECONDS) // connect timeout
+                .readTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
+
                 .build()
 
             return Retrofit.Builder()

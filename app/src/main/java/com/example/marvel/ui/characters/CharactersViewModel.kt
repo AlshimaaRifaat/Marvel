@@ -13,25 +13,25 @@ class CharactersViewModel ( private val repository: CharactersRepository) : View
     private lateinit var job: Job
     private lateinit var searchResultJob: Job
 
-    private val _characters = MutableLiveData<List<CharactersResponse.Data.Result>>()
-    val characters: LiveData<List<CharactersResponse.Data.Result>>
+    private val _characters = MutableLiveData<CharactersResponse.Data>()
+    val characters: LiveData<CharactersResponse.Data>
     get() = _characters
 
-    private val _searchCharactersResult = MutableLiveData<List<CharactersResponse.Data.Result>>()
-    val searchCharactersResult: LiveData<List<CharactersResponse.Data.Result>>
+    private val _searchCharactersResult = MutableLiveData<CharactersResponse.Data>()
+    val searchCharactersResult: LiveData<CharactersResponse.Data>
         get() = _searchCharactersResult
 
-    fun getCharacters(apikey:String,hash:String,ts:String) {
+    fun getCharacters(apikey:String,hash:String,ts:String,page:Int) {
         job = Coroutines.ioThenMain(
-            { repository.getCharacters(apikey,hash,ts) },
-            { _characters.value = it?.data?.results }
+            { repository.getCharacters(apikey,hash,ts,page) },
+            { _characters.value = it?.data }
         )
     }
 
-    fun getSearchCharactersResult(nameStartsWith:String,apikey:String,hash:String,ts:String) {
+    fun getSearchCharactersResult(nameStartsWith:String,apikey:String,hash:String,ts:String,page:Int) {
         searchResultJob = Coroutines.ioThenMain(
-            { repository.searchCharacters(nameStartsWith,apikey,hash,ts) },
-            { _searchCharactersResult.value = it?.data?.results }
+            { repository.searchCharacters(nameStartsWith,apikey,hash,ts,page) },
+            { _searchCharactersResult.value = it?.data }
         )
     }
 
