@@ -1,10 +1,10 @@
-package com.example.marvel.network
+package com.example.marvel.data.network
 
 import android.content.Context
 import android.net.ConnectivityManager
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.example.marvel.repositories.NoInternetException
+import com.example.marvel.data.repositories.NoInternetException
 import okhttp3.Interceptor
 import okhttp3.Response
 

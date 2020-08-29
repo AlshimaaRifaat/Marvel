@@ -6,7 +6,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.marvel.R
 import com.example.marvel.databinding.RowCharactersBinding
-import com.example.marvel.models.CharactersResponse
+import com.example.marvel.data.models.CharactersResponse
 
 class CharactersAdapter (private val characters: List<CharactersResponse.Data.Result>,
                          private val listener: RecyclerViewClickListener

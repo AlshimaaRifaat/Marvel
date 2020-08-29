@@ -2,7 +2,7 @@ package com.example.marvel.ui.characters
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.marvel.repositories.CharactersRepository
+import com.example.marvel.data.repositories.CharactersRepository
 
 
 @Suppress("UNCHECKED_CAST")

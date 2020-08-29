@@ -7,8 +7,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -16,22 +14,19 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.marvel.R
-import com.example.marvel.models.CharactersResponse
-import com.example.marvel.network.CharactersApi
-import com.example.marvel.network.NetworkConnectionInterceptor
-import com.example.marvel.repositories.ApiException
-import com.example.marvel.repositories.CharactersRepository
-import com.example.marvel.repositories.NoInternetException
+import com.example.marvel.data.models.CharactersResponse
+import com.example.marvel.data.network.CharactersApi
+import com.example.marvel.data.network.NetworkConnectionInterceptor
+import com.example.marvel.data.repositories.ApiException
+import com.example.marvel.data.repositories.CharactersRepository
+import com.example.marvel.data.repositories.NoInternetException
 
 import com.example.marvel.util.hide
 import com.example.marvel.util.show
 import com.example.marvel.util.snackbar
 import kotlinx.android.synthetic.main.fragment_characters.*
-import android.widget.TextView.OnEditorActionListener
-import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import com.example.marvel.paging.EndlessScrollListener
-import com.example.marvel.ui.characterDetails.MarvelAdapter
 
 
 class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListener {

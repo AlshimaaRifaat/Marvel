@@ -1,4 +1,4 @@
-package com.example.marvel.repositories
+package com.example.marvel.data.repositories
 
 import retrofit2.Response
 import java.io.IOException

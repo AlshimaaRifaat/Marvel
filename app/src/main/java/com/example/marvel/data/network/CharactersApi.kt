@@ -1,8 +1,8 @@
-package com.example.marvel.network
+package com.example.marvel.data.network
 
 
-import com.example.marvel.models.CharactersResponse
-import com.example.marvel.models.MarvelResponse
+import com.example.marvel.data.models.CharactersResponse
+import com.example.marvel.data.models.MarvelResponse
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response

@@ -3,8 +3,8 @@ package com.example.marvel.ui.characterDetails
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.marvel.models.MarvelResponse
-import com.example.marvel.repositories.CharacterDetailsRepository
+import com.example.marvel.data.models.MarvelResponse
+import com.example.marvel.data.repositories.CharacterDetailsRepository
 import com.example.marvel.util.Coroutines
 import kotlinx.coroutines.Job
 

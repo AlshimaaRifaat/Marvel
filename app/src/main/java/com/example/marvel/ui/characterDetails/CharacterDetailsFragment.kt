@@ -1,24 +1,25 @@
 package com.example.marvel.ui.characterDetails
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.marvel.R
-import com.example.marvel.models.MarvelResponse
-import com.example.marvel.network.CharactersApi
-import com.example.marvel.network.NetworkConnectionInterceptor
-import com.example.marvel.repositories.ApiException
-import com.example.marvel.repositories.CharacterDetailsRepository
-import com.example.marvel.repositories.NoInternetException
+import com.example.marvel.data.models.MarvelResponse
+import com.example.marvel.data.network.CharactersApi
+import com.example.marvel.data.network.NetworkConnectionInterceptor
+import com.example.marvel.data.repositories.ApiException
+import com.example.marvel.data.repositories.CharacterDetailsRepository
+import com.example.marvel.data.repositories.NoInternetException
 import com.example.marvel.util.hide
 import com.example.marvel.util.show
 import com.example.marvel.util.snackbar
+import com.stfalcon.imageviewer.StfalconImageViewer
 import kotlinx.android.synthetic.main.fragment_character_details.*
 import kotlinx.android.synthetic.main.fragment_characters.*
 
@@ -28,7 +29,7 @@ import kotlinx.android.synthetic.main.fragment_characters.*
  * Use the [CharacterDetailsFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class CharacterDetailsFragment : Fragment(),CharacterDetailsListener {
+class CharacterDetailsFragment : Fragment(),CharacterDetailsListener,RecyclerViewMarvelClick {
     private var image: String? = null
     var name: String? = null
     private var description: String? = null
@@ -95,7 +96,7 @@ class CharacterDetailsFragment : Fragment(),CharacterDetailsListener {
                 rvStories.also {
                     it.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
                     it.setHasFixedSize(true)
-                    storiesAdapter=MarvelAdapter(storiesList)
+                    storiesAdapter=MarvelAdapter(storiesList,this)
                     it.adapter =storiesAdapter
 
                 }
@@ -119,7 +120,7 @@ class CharacterDetailsFragment : Fragment(),CharacterDetailsListener {
                 rvSeries.also {
                     it.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
                     it.setHasFixedSize(true)
-                     seriesAdapter=MarvelAdapter(series)
+                     seriesAdapter=MarvelAdapter(series,this)
                     it.adapter =seriesAdapter
 
                 }
@@ -145,7 +146,7 @@ class CharacterDetailsFragment : Fragment(),CharacterDetailsListener {
                     it.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
                     it.setHasFixedSize(true)
                     it.adapter =
-                        MarvelAdapter(comics)
+                        MarvelAdapter(comics,this)
                 }
                 progressBar.hide()
 
@@ -172,6 +173,18 @@ class CharacterDetailsFragment : Fragment(),CharacterDetailsListener {
     override fun onFailure(message: String) {
         progressBar.hide()
         root_layout.snackbar(message)
+    }
+
+    override fun onRecyclerMarvelItemClick(
+        view: View,
+        position: Int,
+        marvelList: List<MarvelResponse.Data.Result>) {
+        StfalconImageViewer.Builder<MarvelResponse.Data.Result>(context, marvelList) { view, marvelResult ->
+            Glide.with(this).load(marvelResult.thumbnail.path+"."+marvelResult.thumbnail.extension).into(view)
+        }
+            .withStartPosition(position)
+            .show()
+
     }
 
 

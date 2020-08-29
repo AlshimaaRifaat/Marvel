@@ -1,6 +1,6 @@
-package com.example.marvel.repositories
+package com.example.marvel.data.repositories
 
-import com.example.marvel.network.CharactersApi
+import com.example.marvel.data.network.CharactersApi
 
 class CharacterDetailsRepository (
     private val api: CharactersApi

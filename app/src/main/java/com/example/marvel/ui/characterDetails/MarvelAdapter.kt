@@ -5,11 +5,12 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.marvel.R
+import com.example.marvel.data.models.MarvelResponse
 import com.example.marvel.databinding.RowMarvelBinding
-import com.example.marvel.models.MarvelResponse
 
-class MarvelAdapter(private val comics: List<MarvelResponse.Data.Result>
-                 /*   private val listener: CharacterDetailsFragment*/
+
+class MarvelAdapter(private val comics: List<MarvelResponse.Data.Result>,
+                   private val listener: CharacterDetailsFragment
 ) : RecyclerView.Adapter<MarvelAdapter.ComicsViewHolder>(){
 
     override fun getItemCount() = comics.size
@@ -26,9 +27,9 @@ class MarvelAdapter(private val comics: List<MarvelResponse.Data.Result>
 
     override fun onBindViewHolder(holder: ComicsViewHolder, position: Int) {
         holder.rowMarvelBinding.comicsItem = comics[position]
-       /* holder.rowComicsBinding.itemRootLayout.setOnClickListener {
-            listener.onRecyclerViewItemClick(holder.rowComicsBinding.itemRootLayout, comics[position])
-        }*/
+       holder.rowMarvelBinding.itemMarvelLayout.setOnClickListener {
+            listener.onRecyclerMarvelItemClick(holder.rowMarvelBinding.itemMarvelLayout,position, comics)
+        }
 
     }
 

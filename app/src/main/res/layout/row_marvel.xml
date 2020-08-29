@@ -6,10 +6,11 @@
 
         <variable
             name="comicsItem"
-            type="com.example.marvel.models.MarvelResponse.Data.Result" />
+            type="com.example.marvel.data.models.MarvelResponse.Data.Result" />
     </data>
 
     <LinearLayout
+        android:id="@+id/itemMarvelLayout"
         android:orientation="vertical"
         android:layout_width="@dimen/_75sdp"
         android:layout_marginEnd="@dimen/_3sdp"

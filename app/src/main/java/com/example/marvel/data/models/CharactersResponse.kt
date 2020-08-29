@@ -1,4 +1,4 @@
-package com.example.marvel.models
+package com.example.marvel.data.models
 
 data class CharactersResponse(
     val attributionHTML: String?,

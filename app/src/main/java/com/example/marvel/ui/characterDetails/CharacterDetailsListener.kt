@@ -1,6 +1,6 @@
 package com.example.marvel.ui.characterDetails
 
-import com.example.marvel.models.MarvelResponse
+import com.example.marvel.data.models.MarvelResponse
 
 interface CharacterDetailsListener {
     fun onStarted()
