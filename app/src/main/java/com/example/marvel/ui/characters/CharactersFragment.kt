@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -180,9 +181,10 @@ class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListe
     }
 
     private fun charactersList(page: Int) {
-        viewModel.getCharacters("5e04a468ed4195a738dd34e8fdf9b639","7aefd3336721c23e03f8765ec7e41ac5","1",0)
+        viewModel.getCharacters("5e04a468ed4195a738dd34e8fdf9b639","7aefd3336721c23e03f8765ec7e41ac5","1",page)
         try {
             viewModel.characters.observe(viewLifecycleOwner, Observer { charactersData ->
+                progress_bar.visibility=View.GONE
                 this.totalPages = (charactersData.offset!!+1)*(charactersData.limit!!)
                 result_List.addAll(charactersData.results)
 
@@ -190,7 +192,7 @@ class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListe
                     charactersAdapter.getItemCount(),
                     result_List.size
                 )
-
+Toast.makeText(context,result_List.size.toString(),Toast.LENGTH_SHORT).show();
                 rvCharacters.addOnScrollListener(endlessScrollListener)
 
             }) }  catch (e: ApiException) {
