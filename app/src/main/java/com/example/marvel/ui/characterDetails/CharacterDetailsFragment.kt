@@ -75,13 +75,10 @@ class CharacterDetailsFragment : Fragment(),CharacterDetailsListener,RecyclerVie
         val repository = CharacterDetailsRepository(api)
 
         factory = CharacterDetailsViewModelFactory(repository)
-       /* seriesFactory = CharacterDetailsViewModelFactory(repository)
-        storiesFactory = CharacterDetailsViewModelFactory(repository)*/
+      
 
         viewModel = ViewModelProviders.of(this, factory).get(CharacterDetailsViewModel::class.java)
-     /*   seriesViewModel = ViewModelProviders.of(this, factory).get(CharacterDetailsViewModel::class.java)
-        storiesViewModel = ViewModelProviders.of(this, factory).get(CharacterDetailsViewModel::class.java)
-        eventsViewModel = ViewModelProviders.of(this, factory).get(CharacterDetailsViewModel::class.java)*/
+
         viewModel.characterDetailsListener=this
         getComicsList()
         getSeriesList()
