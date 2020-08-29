@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="characterItem"
+            type="com.example.marvel.models.CharactersResponse.Data.Result" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/item_root_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            app:image="@{characterItem.thumbnail.path+ `.` + characterItem.thumbnail.extension}"
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_80sdp"
+            android:scaleType="matrix"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textColor="#000"
+            android:text="@{characterItem.name}"
+            tools:text="ffvvvvvvvvbhnjkl"
+            android:textSize="@dimen/_12sdp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

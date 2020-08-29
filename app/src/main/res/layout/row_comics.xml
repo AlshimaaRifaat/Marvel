@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="comicsItem"
+            type="com.example.marvel.models.MarvelResponse.Data.Result" />
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="@dimen/_75sdp"
+        android:layout_marginEnd="@dimen/_3sdp"
+        android:layout_height="@dimen/_130sdp">
+
+        <ImageView
+            app:image="@{comicsItem.thumbnail.path+ `.` + comicsItem.thumbnail.extension}"
+            android:id="@+id/imageComics"
+            android:layout_width="@dimen/_85sdp"
+            android:layout_height="100dp"
+            android:scaleType="fitXY" />
+
+        <TextView
+            android:id="@+id/tComicsName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/character_image"
+            android:layout_alignBottom="@+id/character_image"
+            android:text="@{comicsItem.title}"
+            android:layout_marginTop="8dp"
+            android:layout_gravity="left"
+            android:gravity="center"
+            android:textSize="8dp"
+            android:textStyle="bold"
+            android:textColor="#fff" />
+    </LinearLayout>
+</layout>
