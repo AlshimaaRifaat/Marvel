@@ -47,6 +47,13 @@ interface CharactersApi {
         @Query("ts") ts: String
     ) : Response<MarvelResponse>
 
+    @GET("characters/{characterId}/stories")
+    suspend fun getStoriesList(
+        @Path(value = "characterId", encoded = true) characterId:String,
+        @Query("apikey") apikey: String,
+        @Query("hash") hash: String,
+        @Query("ts") ts: String
+    ) : Response<MarvelResponse>
 
     companion object{
         operator fun invoke(networkConnectionInterceptor: NetworkConnectionInterceptor) : CharactersApi {

@@ -40,6 +40,10 @@ class CharacterDetailsFragment : Fragment(),CharacterDetailsListener {
     private lateinit var seriesViewModel: CharacterDetailsViewModel
     public lateinit var seriesAdapter :MarvelAdapter
 
+    private lateinit var storiesFactory: CharacterDetailsViewModelFactory
+    private lateinit var storiesViewModel: CharacterDetailsViewModel
+    public lateinit var storiesAdapter :MarvelAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         image = arguments?.getString("image")
@@ -69,14 +73,42 @@ class CharacterDetailsFragment : Fragment(),CharacterDetailsListener {
         val networkConnectionInterceptor= NetworkConnectionInterceptor(requireContext())
         val api = CharactersApi(networkConnectionInterceptor)
         val repository = CharacterDetailsRepository(api)
-        factory = CharacterDetailsViewModelFactory(repository)
 
+        factory = CharacterDetailsViewModelFactory(repository)
         seriesFactory = CharacterDetailsViewModelFactory(repository)
+        storiesFactory = CharacterDetailsViewModelFactory(repository)
+
         viewModel = ViewModelProviders.of(this, factory).get(CharacterDetailsViewModel::class.java)
         seriesViewModel = ViewModelProviders.of(this, factory).get(CharacterDetailsViewModel::class.java)
+        storiesViewModel = ViewModelProviders.of(this, factory).get(CharacterDetailsViewModel::class.java)
         viewModel.characterDetailsListener=this
         getComicsList()
         getSeriesList()
+        getStoriesList()
+
+    }
+
+    private fun getStoriesList() {
+        viewModel.getStoriesList(characetrId.toString(),"5e04a468ed4195a738dd34e8fdf9b639","7aefd3336721c23e03f8765ec7e41ac5","1")
+        try {
+            viewModel.stories.observe(viewLifecycleOwner, Observer {storiesList ->
+                rvStories.also {
+                    it.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+                    it.setHasFixedSize(true)
+                    storiesAdapter=MarvelAdapter(storiesList)
+                    it.adapter =storiesAdapter
+
+                }
+                progressBar.hide()
+
+            }) }  catch (e: ApiException) {
+            e.printStackTrace()
+            onFailure(e.message.toString())
+
+        } catch (e: NoInternetException) {
+            e.printStackTrace()
+            onFailure(e.message.toString())
+        }
 
     }
 

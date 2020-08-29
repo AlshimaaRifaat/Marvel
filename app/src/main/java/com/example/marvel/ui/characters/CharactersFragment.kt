@@ -40,7 +40,6 @@ class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListe
     private lateinit var viewModel: CharactersViewModel
     var navController: NavController? = null
     public lateinit var charactersAdapter : CharactersAdapter
-    public lateinit var searchResultAdapter : CharactersAdapter
 
 
     var my_page = 1
@@ -49,13 +48,9 @@ class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListe
     var totalPages:Int=0
 
     lateinit var endlessScrollListener: EndlessScrollListener
-    //private val kProgressHUD: KProgressHUD? = null
-    //lateinit var searchPeopleAdapter: PopularPeopleAdapter
-    var my_search_page = 1
-    //    lateinit var result_search_List: MutableList<result>
+
     var Status:Boolean=false
-    var totalSearchPages:Int=0
-    lateinit var endlessSearchScrollListener: EndlessScrollListener
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -98,7 +93,7 @@ class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListe
             icSearch.visibility=View.VISIBLE
             tCancel.visibility=View.GONE
         }
-       // SearchKeyBoard()
+
         EditSearchChanger()
     }
 
@@ -122,12 +117,7 @@ class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListe
 
 
             override fun afterTextChanged(s: Editable) {
-               /* if(s.isEmpty())
-                {
-                    getCharactersList()
-                }else{
-                    searchCharactersResult()
-                }*/
+
 
                 initScroll()
                 result_List.clear()
@@ -189,56 +179,15 @@ class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListe
 
     }
 
-   /* private fun SearchKeyBoard() {
-        etSearch.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                if (!etSearch.text.toString().isEmpty()) {
-                    searchCharactersResult();
-                }
-                return@OnEditorActionListener true
-            }
-            false
-        })
-
-
-    }
-*/
     private fun getCharactersList() {
         initScroll()
         charactersList(my_page);
-       /* viewModel.getCharacters("5e04a468ed4195a738dd34e8fdf9b639","7aefd3336721c23e03f8765ec7e41ac5","1")
-        try {
-            viewModel.characters.observe(viewLifecycleOwner, Observer { characters ->
-
-                rvCharacters.also {
-                    it.layoutManager = LinearLayoutManager(requireContext())
-                    it.setHasFixedSize(true)
-                    it.adapter =
-                        CharactersAdapter(characters,this)
-                }
-
-            }) }  catch (e: ApiException) {
-            e.printStackTrace()
-            onFailure(e.message.toString())
-
-        } catch (e: NoInternetException) {
-            e.printStackTrace()
-            onFailure(e.message.toString())
-        }*/
-
     }
 
     private fun charactersList(page: Int) {
         viewModel.getCharacters("5e04a468ed4195a738dd34e8fdf9b639","7aefd3336721c23e03f8765ec7e41ac5","1",0)
         try {
             viewModel.characters.observe(viewLifecycleOwner, Observer { charactersData ->
-
-                /*rvCharacters.also {
-                    it.layoutManager = LinearLayoutManager(requireContext())
-                    it.setHasFixedSize(true)
-                    it.adapter =
-                        CharactersAdapter(characters,this)
-                }*/
                 this.totalPages = (charactersData.offset!!+1)*(charactersData.limit!!)
                 result_List.addAll(charactersData.results)
 
