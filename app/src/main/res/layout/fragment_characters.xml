@@ -14,11 +14,87 @@
         android:background="@color/colorWhite"
         app:layout_constraintStart_toStartOf="parent"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-
         <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            >
+            <TextView
+                android:id="@+id/tLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/Marvel"
+                android:textColor="@color/colorRed"
+                android:textSize="@dimen/_14ssp"
+                android:textStyle="italic"/>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_60sdp"
+            app:cardCornerRadius="4dp"
+            android:layout_centerVertical="true"
+            android:visibility="gone"
+           >
+            <RelativeLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorTrans">
+
+
+                <EditText
+                    android:id="@+id/etSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:hint="@string/Search"
+                    android:textColorHint="@color/colorGrey"
+                    android:background="@null"
+                    android:paddingStart="@dimen/_10sdp"
+                    android:imeOptions="actionGo"
+                    android:inputType="textAutoCorrect"
+                    android:textSize="12sp"
+                    android:textColor="@color/colorBlack"
+                    />
+
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+            <ImageView
+                android:id="@+id/icSearch"
+                android:layout_width="@dimen/_23sdp"
+                android:layout_height="@dimen/_23sdp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="8dp"
+                app:srcCompat="@drawable/ic_search"
+               />
+            <TextView
+                android:id="@+id/tCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/Cancel"
+                android:layout_centerVertical="true"
+                android:textColor="@color/colorRed"
+                android:visibility="gone"
+                 />
+        </RelativeLayout>
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+      <!--  <RelativeLayout
             android:id="@+id/relativeLayout"
             android:layout_width="match_parent"
+            android:background="@color/colorBlack"
             android:layout_height="?actionBarSize">
 
             <EditText
@@ -40,11 +116,10 @@
                 android:layout_marginEnd="8dp"
                 app:srcCompat="@drawable/ic_search" />
 
-        </RelativeLayout>
+        </RelativeLayout>-->
 
 
 
-    </com.google.android.material.appbar.AppBarLayout>
 
     <ProgressBar
         android:id="@+id/progress_bar"

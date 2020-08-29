@@ -64,6 +64,18 @@ class CharactersFragment : Fragment(), CharactersListener,RecyclerViewClickListe
         viewModel.charactersListener=this
         getCharactersList()
 
+        icSearch.setOnClickListener { view->
+            cardView.visibility=View.VISIBLE
+            tLabel.visibility=View.GONE
+            icSearch.visibility=View.GONE
+            tCancel.visibility=View.VISIBLE
+        }
+        tCancel.setOnClickListener { view->
+            tLabel.visibility=View.VISIBLE
+            cardView.visibility=View.GONE
+            icSearch.visibility=View.VISIBLE
+            tCancel.visibility=View.GONE
+        }
         SearchKeyBoard()
         EditSearchChanger()
     }

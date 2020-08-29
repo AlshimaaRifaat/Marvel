@@ -4,4 +4,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="Character_name">name</string>
     <string name="Character_description">description</string>
+    <string name="Search">Search...</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Marvel">Marvel</string>
 </resources>

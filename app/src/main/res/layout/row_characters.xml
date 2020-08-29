@@ -19,20 +19,24 @@
             app:image="@{characterItem.thumbnail.path+ `.` + characterItem.thumbnail.extension}"
             android:id="@+id/image"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_80sdp"
-            android:scaleType="matrix"
+            android:layout_height="@dimen/_150sdp"
+            android:scaleType="fitXY"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            />
 
         <TextView
             android:id="@+id/tName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:textColor="#000"
             android:text="@{characterItem.name}"
-            tools:text="ffvvvvvvvvbhnjkl"
-            android:textSize="@dimen/_12sdp" />
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_25sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/image"
+            app:layout_constraintBottom_toBottomOf="@id/image"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:background="@android:color/white"
+            android:textColor="#000" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
