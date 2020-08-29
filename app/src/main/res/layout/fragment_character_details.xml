@@ -187,7 +187,7 @@
         </androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
 
-   <!-- <LinearLayout
+    <LinearLayout
         android:id="@+id/events"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -199,7 +199,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="comics"
+            android:text="events"
             android:textColor="@android:color/holo_red_dark"
             android:textSize="20dp"
 
@@ -213,7 +213,7 @@
             android:layout_height="wrap_content">
 
         </androidx.recyclerview.widget.RecyclerView>
-    </LinearLayout>-->
+    </LinearLayout>
 
  </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -13,6 +13,7 @@ class CharacterDetailsViewModel ( private val repository: CharacterDetailsReposi
     private lateinit var job: Job
     private lateinit var seriesJob: Job
     private lateinit var storiesJob: Job
+    private lateinit var eventsJob: Job
 
     private val _comics = MutableLiveData<List<MarvelResponse.Data.Result>>()
     val comics: LiveData<List<MarvelResponse.Data.Result>>
@@ -25,6 +26,10 @@ class CharacterDetailsViewModel ( private val repository: CharacterDetailsReposi
     private val _stories = MutableLiveData<List<MarvelResponse.Data.Result>>()
     val stories: LiveData<List<MarvelResponse.Data.Result>>
         get() = _stories
+
+    private val _events = MutableLiveData<List<MarvelResponse.Data.Result>>()
+    val events: LiveData<List<MarvelResponse.Data.Result>>
+        get() = _events
 
     fun getComicsList(characterId:String,apikey:String,hash:String,ts:String) {
         job = Coroutines.ioThenMain(
@@ -45,10 +50,18 @@ class CharacterDetailsViewModel ( private val repository: CharacterDetailsReposi
             { _stories.value = it?.data?.results }
         )
     }
+
+    fun getEventsList(characterId:String,apikey:String,hash:String,ts:String) {
+        eventsJob = Coroutines.ioThenMain(
+            { repository.getEventsList(characterId,apikey,hash,ts) },
+            { _events.value = it?.data?.results }
+        )
+    }
     override fun onCleared() {
         super.onCleared()
         if(::job.isInitialized) job.cancel()
         if(::seriesJob.isInitialized) seriesJob.cancel()
         if(::storiesJob.isInitialized) storiesJob.cancel()
+        if(::eventsJob.isInitialized) eventsJob.cancel()
     }
 }

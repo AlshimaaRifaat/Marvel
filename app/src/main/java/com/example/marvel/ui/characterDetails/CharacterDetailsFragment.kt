@@ -37,13 +37,13 @@ class CharacterDetailsFragment : Fragment(),CharacterDetailsListener,RecyclerVie
     private lateinit var factory: CharacterDetailsViewModelFactory
     private lateinit var viewModel: CharacterDetailsViewModel
 
-    private lateinit var seriesFactory: CharacterDetailsViewModelFactory
-    private lateinit var seriesViewModel: CharacterDetailsViewModel
     public lateinit var seriesAdapter :MarvelAdapter
 
-    private lateinit var storiesFactory: CharacterDetailsViewModelFactory
-    private lateinit var storiesViewModel: CharacterDetailsViewModel
+
     public lateinit var storiesAdapter :MarvelAdapter
+
+
+    public lateinit var eventsAdapter :MarvelAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,18 +75,47 @@ class CharacterDetailsFragment : Fragment(),CharacterDetailsListener,RecyclerVie
         val repository = CharacterDetailsRepository(api)
 
         factory = CharacterDetailsViewModelFactory(repository)
-        seriesFactory = CharacterDetailsViewModelFactory(repository)
-        storiesFactory = CharacterDetailsViewModelFactory(repository)
+       /* seriesFactory = CharacterDetailsViewModelFactory(repository)
+        storiesFactory = CharacterDetailsViewModelFactory(repository)*/
 
         viewModel = ViewModelProviders.of(this, factory).get(CharacterDetailsViewModel::class.java)
-        seriesViewModel = ViewModelProviders.of(this, factory).get(CharacterDetailsViewModel::class.java)
+     /*   seriesViewModel = ViewModelProviders.of(this, factory).get(CharacterDetailsViewModel::class.java)
         storiesViewModel = ViewModelProviders.of(this, factory).get(CharacterDetailsViewModel::class.java)
+        eventsViewModel = ViewModelProviders.of(this, factory).get(CharacterDetailsViewModel::class.java)*/
         viewModel.characterDetailsListener=this
         getComicsList()
         getSeriesList()
         getStoriesList()
+        getEventsList()
 
     }
+
+    private fun getEventsList() {
+        if(isConnected) {
+            viewModel.getEventsList(
+                characetrId.toString(),
+                "5e04a468ed4195a738dd34e8fdf9b639",
+                "7aefd3336721c23e03f8765ec7e41ac5",
+                "1"
+            )
+            viewModel.events.observe(viewLifecycleOwner, Observer { eventsList ->
+                rvEvents.also {
+                    it.layoutManager =
+                        LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                    it.setHasFixedSize(true)
+                    eventsAdapter = MarvelAdapter(eventsList, this)
+                    it.adapter = eventsAdapter
+
+                }
+                progressBar.hide()
+
+            })
+        }else{
+            Toast.makeText(context,"check network connection!", Toast.LENGTH_LONG).show()
+        }
+
+    }
+
     val isConnected: Boolean
         get() {
             return (context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
@@ -121,7 +150,7 @@ class CharacterDetailsFragment : Fragment(),CharacterDetailsListener,RecyclerVie
     private fun getSeriesList() {
         if(isConnected) {
         viewModel.getSeriesList(characetrId.toString(),"5e04a468ed4195a738dd34e8fdf9b639","7aefd3336721c23e03f8765ec7e41ac5","1")
-            seriesViewModel.series.observe(viewLifecycleOwner, Observer {series ->
+            viewModel.series.observe(viewLifecycleOwner, Observer {series ->
                 rvSeries.also {
                     it.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
                     it.setHasFixedSize(true)

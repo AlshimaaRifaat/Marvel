@@ -18,4 +18,3 @@ abstract class SafeApiRequest {
 }
 
 class ApiException(message: String): IOException(message)
-class NoInternetException(message: String) : IOException(message)

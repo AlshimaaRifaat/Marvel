@@ -55,6 +55,14 @@ interface CharactersApi {
         @Query("ts") ts: String
     ) : Response<MarvelResponse>
 
+    @GET("characters/{characterId}/events")
+    suspend fun getEventsList(
+        @Path(value = "characterId", encoded = true) characterId:String,
+        @Query("apikey") apikey: String,
+        @Query("hash") hash: String,
+        @Query("ts") ts: String
+    ) : Response<MarvelResponse>
+
     companion object{
         operator fun invoke() : CharactersApi {
             val interceptor= HttpLoggingInterceptor();
@@ -63,12 +71,10 @@ interface CharactersApi {
 
 
             val okkHttpclient = OkHttpClient.Builder()
-
                 .addInterceptor(interceptor)
                 .connectTimeout(60, TimeUnit.SECONDS) // connect timeout
                 .readTimeout(60, TimeUnit.SECONDS)
                 .connectTimeout(60, TimeUnit.SECONDS)
-
                 .build()
 
             return Retrofit.Builder()
